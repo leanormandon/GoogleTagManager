@@ -15,7 +15,7 @@ namespace GoogleTagManager\Controller;
 use Exception;
 use GoogleTagManager\Form\ConfigurationForm;
 use GoogleTagManager\GoogleTagManager;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;

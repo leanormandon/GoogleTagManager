@@ -120,7 +120,7 @@ class GoogleTagService
         $brand = $product->getBrand();
 
         $item = [
-            'item_id' => $product->getId(),
+            'item_id' => (string)$product->getId(),
             'item_name' => htmlspecialchars($product->getTitle()),
             'item_brand' => htmlspecialchars(null !== $brand ? $brand->setLocale($lang->getLocale())->getTitle() : ConfigQuery::read('store_name')),
             'affiliation' => htmlspecialchars(ConfigQuery::read('store_name')),

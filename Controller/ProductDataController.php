@@ -6,7 +6,7 @@ use GoogleTagManager\Service\GoogleTagService;
 use Propel\Runtime\Exception\PropelException;
 use JsonException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Thelia\Controller\Front\BaseFrontController;
 use Thelia\Core\HttpFoundation\JsonResponse;
 use Thelia\Model\Base\CurrencyQuery;
@@ -84,8 +84,17 @@ class ProductDataController extends BaseFrontController
         /** @var Currency $currency */
         $currency = $session->get('thelia.current.currency') ?: CurrencyQuery::create()->filterByByDefault(1)->findOne();
 
-        $result = $googleTagService->getProductItem($product, $lang, $currency, $pse, $quantity);
+        $item = $googleTagService->getProductItem($product, $lang, $currency, $pse, $quantity);
+        $price = $item['price'];
+        $discount = $item['discount'];
+        $quantity = $item['quantity'];
 
-        return new JsonResponse(json_encode([$result], JSON_THROW_ON_ERROR));
+        $result = [
+            'items' => $item,
+            'value' => ($price - $discount) * $quantity,
+            'currency' => $item['currency']
+        ];
+
+        return new JsonResponse(json_encode($result, JSON_THROW_ON_ERROR));
     }
 }

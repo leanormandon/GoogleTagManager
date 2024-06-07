@@ -12,6 +12,9 @@ use Thelia\Core\Event\Customer\CustomerCreateOrUpdateEvent;
 use Thelia\Core\Event\Customer\CustomerLoginEvent;
 use Thelia\Core\Event\Loop\LoopExtendsParseResultsEvent;
 use Thelia\Core\Event\TheliaEvents;
+use Thelia\Model\CurrencyQuery;
+use Thelia\Model\Lang;
+use Thelia\Model\ProductQuery;
 
 class GoogleTagListener implements EventSubscriberInterface
 {
@@ -67,12 +70,21 @@ class GoogleTagListener implements EventSubscriberInterface
 
         $productId = $session->get(GoogleTagManager::GOOGLE_TAG_VIEW_ITEM);
 
-        $items = $this->googleTagService->getProductItems([$productId]);
+        $product = ProductQuery::create()->filterById($productId)->findOne();
+
+        /** @var Lang $lang */
+        $lang = $session->get('thelia.current.lang');
+
+        $currency = $session->getCurrency() ?: CurrencyQuery::create()->findOneByByDefault(1);
+
+        $items = $this->googleTagService->getProductItem($product, $lang, $currency, null, 1);
 
         $result = [
             'event' => 'view_item',
             'ecommerce' => [
-                'items' => $items
+                'items' => $items,
+                'value' => $items['price'],
+                'currency' => $currency?->getCode(),
             ]
         ];
 

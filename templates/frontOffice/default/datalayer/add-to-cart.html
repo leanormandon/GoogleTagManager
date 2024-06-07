@@ -1,7 +1,6 @@
 <script>
 
-    let trackPseToCart = async function(e) {
-
+    let getCartItem = async function(e) {
         const response = await fetch('{url path='/googletagmanager/getCartItem'}', {
             method: "POST",
             headers: {
@@ -14,21 +13,35 @@
             })
         })
 
-        const resultJson = await response.json();
+        return await response.json();
+    }
+
+
+    let addPseToCart = async function(e) {
+
+        const resultJson = await getCartItem(e)
 
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ ecommerce: null });
         window.dataLayer.push({
             event: 'add_to_cart',
-            ecommerce: {
-                items: JSON.parse(resultJson)
-            },
+            ecommerce: JSON.parse(resultJson),
         });
-
-        console.log(window.dataLayer)
-
     }
 
-    document.addEventListener('addPseToCart', trackPseToCart)
+    let removePseFromCart = async function(e) {
+
+        const resultJson = await getCartItem(e)
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ ecommerce: null });
+        window.dataLayer.push({
+            event: 'remove_from_cart',
+            ecommerce: JSON.parse(resultJson),
+        });
+    }
+
+    document.addEventListener('addPseToCart', addPseToCart);
+    document.addEventListener('removePseFromCart', removePseFromCart);
 
 </script>

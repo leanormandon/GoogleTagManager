@@ -2,6 +2,7 @@
 
 namespace GoogleTagManager\Service;
 
+use GoogleTagManager\Events\GoogleTagPageViewEvent;
 use Propel\Runtime\Exception\PropelException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -76,7 +77,10 @@ class GoogleTagService
             $result['google_tag_params']['ecomm_totalvalue'] = $this->getOrderTotalAmount($view);
         }
 
-        return json_encode($result, JSON_THROW_ON_ERROR);
+        $event = new GoogleTagPageViewEvent($result, $user, $view);
+        $event = $this->dispatcher->dispatch($event);
+
+        return json_encode($event->getResult(), JSON_THROW_ON_ERROR);
     }
 
     /**

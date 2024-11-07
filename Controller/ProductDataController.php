@@ -86,7 +86,7 @@ class ProductDataController extends BaseFrontController
 
         $item = $googleTagService->getProductItem($product, $lang, $currency, $pse, $quantity);
         $price = $item['price'];
-        $discount = $item['discount'];
+        $discount = $item['discount'] ?? 0;
         $quantity = $item['quantity'];
 
         $result = [
